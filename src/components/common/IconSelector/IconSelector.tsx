@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Search } from 'lucide-react';
-import { ICON_CATEGORIES, type IconName } from './iconList';
+import { ICONS, type IconName } from './iconList';
 
 interface IconSelectorProps {
   value?: IconName;
@@ -14,47 +14,17 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
   onClose
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<keyof typeof ICON_CATEGORIES>('Common');
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Get filtered icons based on search query
-  const getFilteredIcons = () => {
-    if (!searchQuery) {
-      return ICON_CATEGORIES[selectedCategory];
-    }
-
-    const query = searchQuery.toLowerCase();
-    const allIcons = Object.values(ICON_CATEGORIES).flat();
-    return allIcons.filter(icon => 
-      icon.name.toLowerCase().includes(query)
-    );
-  };
-
-  const filteredIcons = getFilteredIcons();
-
-  // Handle keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    switch (e.key) {
-      case 'Escape':
-        onClose?.();
-        break;
-      case 'Tab':
-        if (!e.shiftKey && document.activeElement === searchInputRef.current) {
-          e.preventDefault();
-          const firstIcon = document.querySelector('[data-icon-button]');
-          (firstIcon as HTMLElement)?.focus();
-        }
-        break;
-    }
-  };
+  const filteredIcons = searchQuery
+    ? ICONS.filter(icon => icon.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : ICONS;
 
   return (
-    <div 
-      className="bg-white rounded-lg shadow-lg p-4 max-h-[600px] overflow-hidden flex flex-col"
-      onKeyDown={handleKeyDown}
-    >
-      {/* Search and Category Selection */}
-      <div className="space-y-4 mb-4">
+    <div className="bg-white rounded-lg shadow-lg p-4 max-h-[600px] overflow-hidden flex flex-col">
+      {/* Search */}
+      <div className="mb-4">
         <div className="relative">
           <Search 
             size={20} 
@@ -70,35 +40,15 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
             autoFocus
           />
         </div>
-
-        {!searchQuery && (
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {Object.keys(ICON_CATEGORIES).map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category as keyof typeof ICON_CATEGORIES)}
-                className={`
-                  px-3 py-1 rounded-full text-sm whitespace-nowrap
-                  ${selectedCategory === category
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
-                `}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Icons Grid */}
-      <div className="overflow-y-auto flex-1">
+      <div className="overflow-y-auto">
         <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2">
           {filteredIcons.map(({ name, icon: IconComponent }) => (
             <button
               key={name}
               onClick={() => onChange(name)}
-              data-icon-button
               className={`
                 aspect-square p-2 rounded-lg flex items-center justify-center
                 ${value === name
