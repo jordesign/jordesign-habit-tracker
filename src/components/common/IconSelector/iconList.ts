@@ -1,16 +1,18 @@
 import {
   // Common
   Heart, Star, Home, Settings, User, Mail, Bell, Calendar,
+  // Actions
+  Plus, Minus, Check, X, Edit, Trash,
   // Weather
-  Sun, Moon, Cloud, CloudRain, CloudSnow, Wind,
+  Sun, Moon, Cloud, Umbrella, Wind, Snowflake,
   // Arrows
   ArrowUp, ArrowDown, ArrowLeft, ArrowRight, ChevronUp, ChevronDown,
   // Media
-  Play, Pause, Stop, Music, Video, Image,
+  Music, Image, Video, Mic, Volume2, Headphones,
   // Objects
-  Book, File, Folder, Camera, Phone, Printer,
+  Bookmark, File, Folder, Smartphone, Laptop, Printer,
   // Health
-  Activity, HeartPulse, Stethoscope, Pill, Weight, Dumbbell,
+  Activity, Heart as HeartIcon, Zap, Timer, Dumbbell, Apple,
   // Type for LucideIcon
   type LucideIcon
 } from 'lucide-react';
@@ -26,13 +28,21 @@ export const ICON_CATEGORIES = {
     { name: 'bell', icon: Bell },
     { name: 'calendar', icon: Calendar },
   ],
+  Actions: [
+    { name: 'plus', icon: Plus },
+    { name: 'minus', icon: Minus },
+    { name: 'check', icon: Check },
+    { name: 'x', icon: X },
+    { name: 'edit', icon: Edit },
+    { name: 'trash', icon: Trash },
+  ],
   Weather: [
     { name: 'sun', icon: Sun },
     { name: 'moon', icon: Moon },
     { name: 'cloud', icon: Cloud },
-    { name: 'cloudRain', icon: CloudRain },
-    { name: 'cloudSnow', icon: CloudSnow },
+    { name: 'umbrella', icon: Umbrella },
     { name: 'wind', icon: Wind },
+    { name: 'snowflake', icon: Snowflake },
   ],
   Arrows: [
     { name: 'arrowUp', icon: ArrowUp },
@@ -43,28 +53,28 @@ export const ICON_CATEGORIES = {
     { name: 'chevronDown', icon: ChevronDown },
   ],
   Media: [
-    { name: 'play', icon: Play },
-    { name: 'pause', icon: Pause },
-    { name: 'stop', icon: Stop },
     { name: 'music', icon: Music },
-    { name: 'video', icon: Video },
     { name: 'image', icon: Image },
+    { name: 'video', icon: Video },
+    { name: 'mic', icon: Mic },
+    { name: 'volume', icon: Volume2 },
+    { name: 'headphones', icon: Headphones },
   ],
   Objects: [
-    { name: 'book', icon: Book },
+    { name: 'bookmark', icon: Bookmark },
     { name: 'file', icon: File },
     { name: 'folder', icon: Folder },
-    { name: 'camera', icon: Camera },
-    { name: 'phone', icon: Phone },
+    { name: 'smartphone', icon: Smartphone },
+    { name: 'laptop', icon: Laptop },
     { name: 'printer', icon: Printer },
   ],
   Health: [
     { name: 'activity', icon: Activity },
-    { name: 'heartPulse', icon: HeartPulse },
-    { name: 'stethoscope', icon: Stethoscope },
-    { name: 'pill', icon: Pill },
-    { name: 'weight', icon: Weight },
+    { name: 'heartbeat', icon: HeartIcon },
+    { name: 'zap', icon: Zap },
+    { name: 'timer', icon: Timer },
     { name: 'dumbbell', icon: Dumbbell },
+    { name: 'apple', icon: Apple },
   ],
 } as const;
 
