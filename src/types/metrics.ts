@@ -12,14 +12,30 @@ export enum ReportingPeriod {
   ANNUAL = "annual"
 }
 
+export enum CommonUnit {
+  KG = "kg",
+  LBS = "lbs",
+  HOURS = "hrs",
+  MINUTES = "min",
+  METERS = "m",
+  KILOMETERS = "km",
+  MILES = "mi",
+  CALORIES = "cal",
+  STEPS = "steps",
+  PERCENT = "%",
+}
+
 export interface Metric {
   id: string;
   name: string;
   description: string;
   icon: string;
   type: MetricType;
-  options?: string[]; // Required only for SELECT type
-  unit?: string; // Required only for VALUE type
+  unit?: string; // Can be either a CommonUnit or custom string
+  minValue?: number;
+  maxValue?: number;
+  precision?: number;
+  options?: string[];
   reportingPeriod: ReportingPeriod;
   createdAt: Date;
   updatedAt: Date;

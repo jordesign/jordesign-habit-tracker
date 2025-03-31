@@ -10,7 +10,7 @@ import {
   Droplet, Zap, Flag, Target, 
   Timer, Coffee, Book
 } from 'lucide-react';
-import { MetricType, ReportingPeriod } from '../../types/metrics';
+import { MetricType, ReportingPeriod, CommonUnit } from '../../types/metrics';
 import { IconSelectorTrigger } from '../common/IconSelector/IconSelectorTrigger';
 import type { IconName } from '../common/IconSelector/types';
 
@@ -43,12 +43,22 @@ const metricFormSchema = z.object({
   icon: z.string().min(1, "Icon is required"),
   type: z.nativeEnum(MetricType),
   reportingPeriod: z.nativeEnum(ReportingPeriod),
-  // Optional fields based on type
+  // Conditional fields based on type
   unit: z.string().optional(),
+  customUnit: z.string().optional(),
   minValue: z.number().optional(),
   maxValue: z.number().optional(),
-  precision: z.number().min(0).max(4).optional(),
+  precision: z.number().min(0).max(3).optional(),
   options: z.array(z.string()).optional(),
+}).refine(data => {
+  if (data.type === MetricType.VALUE) {
+    // Ensure unit is provided for value types
+    return data.unit !== "" || data.customUnit;
+  }
+  return true;
+}, {
+  message: "Unit is required for numerical values",
+  path: ["unit"],
 });
 
 type MetricFormData = z.infer<typeof metricFormSchema>;
@@ -112,7 +122,12 @@ export const MetricForm: React.FC<MetricFormProps> = ({
           )}
           {selectedType === MetricType.VALUE && (
             <div>
-              <span>0 {formData.unit}</span>
+              <span>0</span>
+              {watch('unit') === 'other' ? (
+                <span className="ml-1">{watch('customUnit')}</span>
+              ) : (
+                <span className="ml-1">{watch('unit')}</span>
+              )}
             </div>
           )}
           {selectedType === MetricType.SELECT && (
@@ -209,44 +224,71 @@ export const MetricForm: React.FC<MetricFormProps> = ({
                 <label className="block text-sm font-medium text-gray-700">
                   Unit
                 </label>
-                <input
-                  type="text"
-                  {...register('unit')}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
+                <div className="mt-1 flex gap-2">
+                  <select
+                    {...register('unit')}
+                    className="block w-full rounded-md border-gray-300 shadow-sm 
+                              focus:border-blue-500 focus:ring-blue-500"
+                    defaultValue=""
+                  >
+                    <option value="">Select a unit...</option>
+                    <optgroup label="Common Units">
+                      {Object.entries(CommonUnit).map(([key, value]) => (
+                        <option key={key} value={value}>
+                          {value}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </select>
+                  {/* Allow custom unit input if "Other" is selected */}
+                  {watch('unit') === 'other' && (
+                    <input
+                      type="text"
+                      {...register('customUnit')}
+                      placeholder="Custom unit"
+                      className="block w-full rounded-md border-gray-300 shadow-sm 
+                                focus:border-blue-500 focus:ring-blue-500"
+                    />
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Minimum
+                    Minimum Value
                   </label>
                   <input
                     type="number"
                     {...register('minValue', { valueAsNumber: true })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                              focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Maximum
+                    Maximum Value
                   </label>
                   <input
                     type="number"
                     {...register('maxValue', { valueAsNumber: true })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                              focus:border-blue-500 focus:ring-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Decimal Places
                   </label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="4"
+                  <select
                     {...register('precision', { valueAsNumber: true })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                              focus:border-blue-500 focus:ring-blue-500"
+                  >
+                    <option value={0}>0</option>
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                  </select>
                 </div>
               </div>
             </div>
