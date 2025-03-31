@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { format, isToday, isFuture, isEqual } from 'date-fns';
+import { format, isToday, isFuture } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
-import { storageService } from '../../services/storage/StorageService';
 
 interface DateNavigationProps {
   selectedDate: Date;
@@ -14,33 +13,6 @@ export const DateNavigation: React.FC<DateNavigationProps> = ({
   onChange
 }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  
-  // Get dates that have entries
-  const getDatesWithEntries = () => {
-    // This is a simplified version - you might want to cache this or handle it differently
-    const entries = storageService.getAllEntries();
-    const datesWithEntries = new Set(
-      entries.map(entry => format(new Date(entry.date), 'yyyy-MM-dd'))
-    );
-    return datesWithEntries;
-  };
-
-  const datesWithEntries = getDatesWithEntries();
-
-  // Custom modifier to show dots under dates with entries
-  const modifiers = {
-    hasEntry: (date: Date) => 
-      datesWithEntries.has(format(date, 'yyyy-MM-dd'))
-  };
-
-  // Custom styles for the calendar
-  const modifiersStyles = {
-    hasEntry: {
-      textDecoration: 'underline',
-      textDecorationColor: '#3b82f6',
-      textDecorationThickness: '2px'
-    }
-  };
 
   return (
     <div className="relative">
@@ -112,8 +84,6 @@ export const DateNavigation: React.FC<DateNavigationProps> = ({
                 setIsCalendarOpen(false);
               }
             }}
-            modifiers={modifiers}
-            modifiersStyles={modifiersStyles}
             disabled={[
               { after: new Date() }
             ]}
