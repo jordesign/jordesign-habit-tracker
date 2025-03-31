@@ -1,7 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { 
+  CheckCircle, 
+  XCircle, 
+  Footprints, 
+  Droplet, 
+  Smile, 
+  Activity 
+} from 'lucide-react';
 import type { Metric } from '../../types/metrics';
 import { storageService } from '../../services/storage/StorageService';
 import { queries } from '../../services/storage/queries';
@@ -78,6 +85,21 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric, selectedDate, onClick }
     }
   };
 
+  const getIconComponent = (iconName: string) => {
+    switch (iconName) {
+      case 'footprints':
+        return <Footprints size={24} />;
+      case 'droplet':
+        return <Droplet size={24} />;
+      case 'smile':
+        return <Smile size={24} />;
+      case 'activity':
+        return <Activity size={24} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <button
       onClick={onClick}
@@ -85,7 +107,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ metric, selectedDate, onClick }
                  hover:border-primary-500 hover:shadow-md transition-all p-4"
     >
       <div className="flex items-center gap-3 mb-3">
-        <span className="text-gray-600">{metric.icon}</span>
+        <span className="text-gray-600">{getIconComponent(metric.icon)}</span>
         <h3 className="text-lg font-medium text-gray-900">{metric.name}</h3>
       </div>
 
