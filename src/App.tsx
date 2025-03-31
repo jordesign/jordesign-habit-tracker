@@ -4,6 +4,7 @@ import { HomeScreen } from './components/home/HomeScreen';
 import { Settings } from './components/settings/Settings';
 import { VisualizationDashboard } from './components/visualizations/VisualizationDashboard';
 import { AddMetricPage } from './components/metrics/AddMetricPage';
+import { BooleanMetricTest } from './components/visualizations/BooleanMetricTest';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/visualizations" element={<VisualizationDashboard />} />
         <Route path="/metrics/new" element={<AddMetricPage />} />
+        <Route path="/visualizations/boolean-test" element={<BooleanMetricTest />} />
         <Route path="*" element={
           <div className="p-8 text-center">
             <h1 className="text-2xl font-bold text-gray-900">Page not found</h1>
