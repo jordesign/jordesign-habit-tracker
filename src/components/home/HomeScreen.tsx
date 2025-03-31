@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { Settings, BarChart3, Plus } from 'lucide-react';
+import { DateNavigation } from '../calendar/DateNavigation';
 
 export const HomeScreen: React.FC = () => {
-  const [selectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const navigate = useNavigate();
 
   return (
@@ -37,6 +38,12 @@ export const HomeScreen: React.FC = () => {
       >
         <Plus size={24} />
       </button>
+      <div className="mb-8">
+        <DateNavigation
+          selectedDate={selectedDate}
+          onChange={setSelectedDate}
+        />
+      </div>
     </div>
   );
 }; 

@@ -6,4 +6,34 @@
   body {
     @apply bg-gray-50 text-gray-900;
   }
+}
+
+/* Add these styles to your existing CSS */
+.custom-day-picker {
+  font-family: inherit;
+}
+
+.custom-day-picker .rdp-day {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.custom-day-picker .rdp-day_selected {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.custom-day-picker .rdp-day_today {
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.custom-day-picker .rdp-day:hover:not(.rdp-day_selected) {
+  background-color: #f3f4f6;
+}
+
+.custom-day-picker .rdp-day_disabled {
+  opacity: 0.5;
 } 
