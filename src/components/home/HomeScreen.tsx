@@ -1,43 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { DateSelector } from './DateSelector';
-import { MetricGrid } from './MetricGrid';
-import { Settings, BarChart3, Book } from 'lucide-react';
-import { storageService } from '../../services/storage/StorageService';
+import { Settings, BarChart3, Plus } from 'lucide-react';
 
 export const HomeScreen: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate] = useState(new Date());
   const navigate = useNavigate();
-  const metrics = storageService.getMetrics();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading time for smoother initialization
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="animate-pulse">
-          <div className="h-10 bg-gray-200 rounded w-64 mb-8"></div>
-          <div className="h-20 bg-gray-200 rounded mb-8"></div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-32 bg-gray-200 rounded-xl"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold text-gray-900">
           {format(selectedDate, 'EEEE, MMMM d')}
@@ -45,46 +16,27 @@ export const HomeScreen: React.FC = () => {
         <div className="flex gap-4">
           <button
             onClick={() => navigate('/visualizations')}
-            className="p-2 text-gray-600 hover:text-primary-600 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Visualizations"
+            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg"
           >
             <BarChart3 size={24} />
           </button>
           <button
             onClick={() => navigate('/settings')}
-            className="p-2 text-gray-600 hover:text-primary-600 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Settings"
+            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg"
           >
             <Settings size={24} />
           </button>
         </div>
       </div>
-
-      {/* Date Selector */}
-      <div className="mb-8">
-        <DateSelector 
-          selectedDate={selectedDate} 
-          onChange={setSelectedDate} 
-        />
+      <div className="bg-blue-100 p-4 rounded-lg">
+        <p className="text-2xl">Test Content</p>
       </div>
-
-      {/* Journal Button */}
-      <div className="mb-8">
-        <button
-          onClick={() => navigate(`/journal/${format(selectedDate, 'yyyy-MM-dd')}`)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg
-                     text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
-        >
-          <Book size={20} />
-          <span>View Journal</span>
-        </button>
-      </div>
-
-      {/* Metrics Grid */}
-      <MetricGrid 
-        metrics={metrics} 
-        selectedDate={selectedDate} 
-      />
+      <button
+        onClick={() => navigate('/metrics/new')}
+        className="fixed bottom-6 right-6 p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        <Plus size={24} />
+      </button>
     </div>
   );
 }; 
