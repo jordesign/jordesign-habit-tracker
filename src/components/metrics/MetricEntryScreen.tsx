@@ -69,4 +69,26 @@ const renderInput = () => {
         </select>
       );
   }
+};
+
+const MetricEntryScreen = () => {
+  // In the header section of the component
+  <div className="flex-1">
+    <div className="flex items-center gap-2">
+      <IconComponent size={24} className="text-gray-600" />
+      <h1 className="text-2xl font-bold text-gray-900">{metric.name}</h1>
+    </div>
+    {metric.description && (
+      <p className="text-gray-600 mt-1">{metric.description}</p>
+    )}
+    <p className="text-gray-500 mt-1">
+      {format(new Date(date), 'EEEE, MMMM d, yyyy')}
+    </p>
+  </div>
+
+  return (
+    <div className="flex-1">
+      {renderInput()}
+    </div>
+  );
 }; 

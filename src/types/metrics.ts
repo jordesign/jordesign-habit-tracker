@@ -15,6 +15,7 @@ export enum ReportingPeriod {
 export interface Metric {
   id: string;
   name: string;
+  description: string;
   icon: string;
   type: MetricType;
   options?: string[]; // Required only for SELECT type

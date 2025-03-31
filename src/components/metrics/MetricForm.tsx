@@ -36,6 +36,10 @@ const metricFormSchema = z.object({
   name: z.string()
     .min(1, "Name is required")
     .max(50, "Name must be 50 characters or less"),
+  description: z.string()
+    .max(200, "Description must be 200 characters or less")
+    .optional()
+    .or(z.literal('')),
   icon: z.string().min(1, "Icon is required"),
   type: z.nativeEnum(MetricType),
   reportingPeriod: z.nativeEnum(ReportingPeriod),
@@ -96,6 +100,9 @@ export const MetricForm: React.FC<MetricFormProps> = ({
             {formData.name || 'Metric Name'}
           </h3>
         </div>
+        {formData.description && (
+          <p className="text-gray-600 text-sm mb-2">{formData.description}</p>
+        )}
         <div className="text-sm text-gray-600">
           {selectedType === MetricType.BOOLEAN && (
             <div className="flex items-center gap-2">
@@ -139,6 +146,22 @@ export const MetricForm: React.FC<MetricFormProps> = ({
             />
             {errors.name && (
               <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <textarea
+              {...register('description')}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+                        focus:border-blue-500 focus:ring-blue-500"
+              placeholder="What should be tracked? (optional)"
+              rows={2}
+            />
+            {errors.description && (
+              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
             )}
           </div>
 
