@@ -1,7 +1,13 @@
-import { metricSchema, metricEntrySchema, journalEntrySchema, appSettingsSchema } from '../types/utils';
-import type { Metric, MetricEntry } from '../types/metrics';
-import type { JournalEntry } from '../types/journal';
-import type { AppSettings } from '../types/settings';
+import { 
+  metricSchema, 
+  metricEntrySchema, 
+  journalEntrySchema, 
+  appSettingsSchema 
+} from "../types/schemas";
+import type { Metric } from "../types/metrics";
+import type { MetricEntry } from "../types/metrics";
+import type { JournalEntry } from "../types/journal";
+import type { AppSettings } from "../types/settings";
 import { MetricType, ReportingPeriod } from '../types/metrics';
 import { storageService } from '../services/storage/StorageService';
 import { queries } from '../services/storage/queries';
