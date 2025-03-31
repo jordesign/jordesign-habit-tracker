@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import * as Icons from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { IconSelectorModal } from './IconSelectorModal';
-import type { IconName } from './types';
+import { type IconName, getIconComponent } from './iconList';
 
 interface IconSelectorTriggerProps {
   value?: IconName;
@@ -15,7 +15,7 @@ export const IconSelectorTrigger: React.FC<IconSelectorTriggerProps> = ({
   className
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const IconComponent = value ? Icons[value as keyof typeof Icons] : Icons.Image;
+  const IconComponent = value ? getIconComponent(value) : Settings;
 
   return (
     <>

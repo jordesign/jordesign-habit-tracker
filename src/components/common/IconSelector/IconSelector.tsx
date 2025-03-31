@@ -1,19 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import * as Icons from 'lucide-react';
 import { Search } from 'lucide-react';
-import { IconCategories } from './IconCategories';
-import type { IconName } from './types';
-
-// Icon categories for grouping
-const ICON_CATEGORIES = {
-  Common: ['heart', 'star', 'home', 'settings', 'user', 'mail', 'bell', 'calendar'],
-  Weather: ['sun', 'moon', 'cloud', 'cloudRain', 'cloudSnow', 'wind'],
-  Arrows: ['arrowUp', 'arrowDown', 'arrowLeft', 'arrowRight', 'chevronUp', 'chevronDown'],
-  Media: ['play', 'pause', 'stop', 'music', 'video', 'image'],
-  Objects: ['book', 'file', 'folder', 'camera', 'phone', 'printer'],
-  Health: ['activity', 'heartPulse', 'stethoscope', 'pill', 'weight', 'dumbbell'],
-  // Add more categories as needed
-} as const;
+import { ICON_CATEGORIES, type IconName } from './iconList';
 
 interface IconSelectorProps {
   value?: IconName;
@@ -28,23 +15,22 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<keyof typeof ICON_CATEGORIES>('Common');
-  const [filteredIcons, setFilteredIcons] = useState<IconName[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Filter icons based on search query
-  useEffect(() => {
+  // Get filtered icons based on search query
+  const getFilteredIcons = () => {
     if (!searchQuery) {
-      setFilteredIcons(ICON_CATEGORIES[selectedCategory] as IconName[]);
-      return;
+      return ICON_CATEGORIES[selectedCategory];
     }
 
     const query = searchQuery.toLowerCase();
-    const allIcons = Object.values(ICON_CATEGORIES).flat() as IconName[];
-    const filtered = allIcons.filter(iconName => 
-      iconName.toLowerCase().includes(query)
+    const allIcons = Object.values(ICON_CATEGORIES).flat();
+    return allIcons.filter(icon => 
+      icon.name.toLowerCase().includes(query)
     );
-    setFilteredIcons(filtered);
-  }, [searchQuery, selectedCategory]);
+  };
+
+  const filteredIcons = getFilteredIcons();
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -108,25 +94,22 @@ export const IconSelector: React.FC<IconSelectorProps> = ({
       {/* Icons Grid */}
       <div className="overflow-y-auto flex-1">
         <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2">
-          {filteredIcons.map((iconName) => {
-            const IconComponent = Icons[iconName as keyof typeof Icons] as React.FC<Icons.LucideProps>;
-            return (
-              <button
-                key={iconName}
-                onClick={() => onChange(iconName)}
-                data-icon-button
-                className={`
-                  aspect-square p-2 rounded-lg flex items-center justify-center
-                  ${value === iconName
-                    ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500'
-                    : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}
-                  focus:outline-none focus:ring-2 focus:ring-blue-500
-                `}
-              >
-                <IconComponent size={24} />
-              </button>
-            );
-          })}
+          {filteredIcons.map(({ name, icon: IconComponent }) => (
+            <button
+              key={name}
+              onClick={() => onChange(name)}
+              data-icon-button
+              className={`
+                aspect-square p-2 rounded-lg flex items-center justify-center
+                ${value === name
+                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500'
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}
+                focus:outline-none focus:ring-2 focus:ring-blue-500
+              `}
+            >
+              <IconComponent size={24} />
+            </button>
+          ))}
         </div>
       </div>
 
