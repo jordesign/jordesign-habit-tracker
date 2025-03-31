@@ -1,16 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Layout } from './components/layout/Layout';
+import { HomeScreen } from './components/home/HomeScreen';
+import { MetricEntry } from './components/metric/MetricEntry';
+import { JournalEntry } from './components/journal/JournalEntry';
+import { Settings } from './components/settings/Settings';
+import { Visualizations } from './components/visualizations/Visualizations';
 
 function App() {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<div>Dashboard</div>} />
-          <Route path="/habits" element={<div>Habits</div>} />
-          <Route path="/metrics" element={<div>Metrics</div>} />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route path="/" element={<HomeScreen />} />
+        <Route path="/metric/:id/:date" element={<MetricEntry />} />
+        <Route path="/journal/:date" element={<JournalEntry />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/visualizations" element={<Visualizations />} />
+      </Routes>
     </BrowserRouter>
   );
 }
