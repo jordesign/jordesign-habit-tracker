@@ -2,7 +2,7 @@ import { metricSchema, metricEntrySchema, journalEntrySchema, appSettingsSchema 
 import type { Metric, MetricEntry } from '../types/metrics';
 import type { JournalEntry } from '../types/journal';
 import type { AppSettings } from '../types/settings';
-import { MetricType, ReportingPeriod } from './types/metrics';
+import { MetricType, ReportingPeriod } from '../types/metrics';
 import { storageService } from '../services/storage/StorageService';
 import { queries } from '../services/storage/queries';
 import { startOfWeek, endOfWeek } from 'date-fns';
