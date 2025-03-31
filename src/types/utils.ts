@@ -10,8 +10,8 @@ export type CreateJournalEntry = Omit<JournalEntry, 'id' | 'createdAt' | 'update
 
 // Validation schemas
 export const metricSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1).max(100),
+  id: z.string(),
+  name: z.string(),
   icon: z.string(),
   type: z.nativeEnum(MetricType),
   options: z.array(z.string()).optional(),
@@ -19,21 +19,11 @@ export const metricSchema = z.object({
   reportingPeriod: z.nativeEnum(ReportingPeriod),
   createdAt: z.date(),
   updatedAt: z.date()
-}).refine(data => {
-  if (data.type === MetricType.SELECT && (!data.options || data.options.length === 0)) {
-    return false;
-  }
-  if (data.type === MetricType.VALUE && !data.unit) {
-    return false;
-  }
-  return true;
-}, {
-  message: "Invalid metric configuration"
 });
 
 export const metricEntrySchema = z.object({
-  id: z.string().uuid(),
-  metricId: z.string().uuid(),
+  id: z.string(),
+  metricId: z.string(),
   date: z.date(),
   value: z.union([z.boolean(), z.number(), z.string()]),
   note: z.string().optional(),
@@ -42,10 +32,10 @@ export const metricEntrySchema = z.object({
 });
 
 export const journalEntrySchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   date: z.date(),
   content: z.string(),
-  images: z.array(z.string().url()),
+  images: z.array(z.string()),
   createdAt: z.date(),
   updatedAt: z.date()
 });
@@ -53,8 +43,8 @@ export const journalEntrySchema = z.object({
 export const appSettingsSchema = z.object({
   email: z.string().email(),
   enableReminders: z.boolean(),
-  reminderTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
-  metricsToRemind: z.array(z.string().uuid()),
-  defaultView: z.nativeEnum(DefaultView),
-  theme: z.nativeEnum(Theme)
+  reminderTime: z.string(),
+  metricsToRemind: z.array(z.string()),
+  defaultView: z.string(),
+  theme: z.string()
 }); 

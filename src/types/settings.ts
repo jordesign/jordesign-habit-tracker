@@ -16,6 +16,6 @@ export interface AppSettings {
   enableReminders: boolean;
   reminderTime: string; // 24-hour format: "HH:mm"
   metricsToRemind: string[];
-  defaultView: DefaultView;
+  defaultView: string;
   theme: Theme;
 } 
