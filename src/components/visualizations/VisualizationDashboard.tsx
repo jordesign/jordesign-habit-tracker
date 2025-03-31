@@ -17,7 +17,27 @@ import {
   format, eachDayOfInterval 
 } from 'date-fns';
 import { MetricType } from '../../types/metrics';
-import { storageService } from '../../services/storage/StorageService';
+
+// Temporary dummy data
+const DUMMY_METRICS = [
+  {
+    id: '1',
+    name: 'Daily Exercise',
+    type: MetricType.BOOLEAN,
+  },
+  {
+    id: '2',
+    name: 'Steps',
+    type: MetricType.VALUE,
+    unit: 'steps'
+  },
+  {
+    id: '3',
+    name: 'Mood',
+    type: MetricType.SELECT,
+    options: ['Great', 'Good', 'Okay', 'Bad']
+  }
+];
 
 // Period selector options
 const PERIODS = {
@@ -33,7 +53,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 export const VisualizationDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [selectedPeriod, setSelectedPeriod] = useState<Period>('MONTH');
-  const metrics = storageService.getMetrics();
+  const metrics = DUMMY_METRICS;
 
   // Get date range based on selected period
   const getDateRange = () => {
@@ -73,48 +93,28 @@ export const VisualizationDashboard: React.FC = () => {
 
   // Get data for boolean metrics
   const getBooleanData = (metricId: string) => {
-    const days = eachDayOfInterval(dateRange);
-    return days.map(date => {
-      const entries = storageService.getEntriesForDate(date);
-      const entry = entries.find(e => e.metricId === metricId);
-      return {
-        date,
-        value: entry?.value || false
-      };
-    });
+    return Array.from({ length: 30 }, (_, i) => ({
+      date: new Date(2024, 0, i + 1),
+      value: Math.random() > 0.5
+    }));
   };
 
   // Get data for value metrics
   const getValueData = (metricId: string) => {
-    const days = eachDayOfInterval(dateRange);
-    return days.map(date => {
-      const entries = storageService.getEntriesForDate(date);
-      const entry = entries.find(e => e.metricId === metricId);
-      return {
-        date: format(date, dateRange.format),
-        value: entry?.value || 0
-      };
-    });
+    return Array.from({ length: 30 }, (_, i) => ({
+      date: format(new Date(2024, 0, i + 1), 'MMM d'),
+      value: Math.floor(Math.random() * 10000)
+    }));
   };
 
   // Get data for select metrics
   const getSelectData = (metricId: string) => {
-    const entries = storageService.getEntriesForMetric(
-      metricId,
-      dateRange.start,
-      dateRange.end
-    );
-
-    const distribution = entries.reduce((acc, entry) => {
-      const value = entry.value as string;
-      acc[value] = (acc[value] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    return Object.entries(distribution).map(([name, value]) => ({
-      name,
-      value
-    }));
+    return [
+      { name: 'Great', value: 10 },
+      { name: 'Good', value: 15 },
+      { name: 'Okay', value: 8 },
+      { name: 'Bad', value: 3 }
+    ];
   };
 
   return (
