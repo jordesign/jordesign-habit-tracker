@@ -11,6 +11,8 @@ import {
   Timer, Coffee, Book
 } from 'lucide-react';
 import { MetricType, ReportingPeriod } from '../../types/metrics';
+import { IconSelectorTrigger } from '../common/IconSelector/IconSelectorTrigger';
+import type { IconName } from '../common/IconSelector/types';
 
 // Icon mapping for the selector
 const AVAILABLE_ICONS: Record<string, LucideIcon> = {
@@ -63,6 +65,7 @@ export const MetricForm: React.FC<MetricFormProps> = ({
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<MetricFormData>({
     resolver: zodResolver(metricFormSchema),
@@ -144,28 +147,12 @@ export const MetricForm: React.FC<MetricFormProps> = ({
             <label className="block text-sm font-medium text-gray-700">
               Icon
             </label>
-            <div className="mt-1 grid grid-cols-6 gap-2">
-              {Object.entries(AVAILABLE_ICONS).map(([name, Icon]) => (
-                <label
-                  key={name}
-                  className={`
-                    flex items-center justify-center p-2 rounded-lg cursor-pointer
-                    ${watch('icon') === name 
-                      ? 'bg-blue-100 border-blue-500' 
-                      : 'bg-gray-50 border-gray-200'
-                    }
-                    border-2 hover:bg-gray-100
-                  `}
-                >
-                  <input
-                    type="radio"
-                    {...register('icon')}
-                    value={name}
-                    className="sr-only"
-                  />
-                  <Icon size={24} />
-                </label>
-              ))}
+            <div className="mt-1">
+              <IconSelectorTrigger
+                value={watch('icon') as IconName}
+                onChange={(iconName) => setValue('icon', iconName)}
+                className="w-full"
+              />
             </div>
             {errors.icon && (
               <p className="mt-1 text-sm text-red-600">{errors.icon.message}</p>
