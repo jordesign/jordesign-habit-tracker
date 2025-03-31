@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HomeScreen } from './components/home/HomeScreen';
 import { Settings } from './components/settings/Settings';
-import { Visualizations } from './components/visualizations/Visualizations';
+import { VisualizationDashboard } from './components/visualizations/VisualizationDashboard';
 import { AddMetricPage } from './components/metrics/AddMetricPage';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/visualizations" element={<Visualizations />} />
+        <Route path="/visualizations" element={<VisualizationDashboard />} />
         <Route path="/metrics/new" element={<AddMetricPage />} />
         <Route path="*" element={
           <div className="p-8 text-center">
