@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HomeScreen } from './components/home/HomeScreen';
-import { Settings } from './components/settings/Settings';
+import { SettingsScreen } from './components/settings/SettingsScreen';
 import { VisualizationDashboard } from './components/visualizations/VisualizationDashboard';
 import { AddMetricPage } from './components/metrics/AddMetricPage';
 import { BooleanMetricTest } from './components/visualizations/BooleanMetricTest';
@@ -14,7 +14,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomeScreen />} />
-        <Route path="/settings" element={<Settings />} />
+        <Route path="/settings" element={<SettingsScreen />} />
         <Route path="/visualizations" element={<VisualizationDashboard />} />
         <Route path="/metrics/new" element={<AddMetricPage />} />
         <Route path="/visualizations/boolean-test" element={<BooleanMetricTest />} />
