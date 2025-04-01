@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Settings, BarChart3, Plus } from 'lucide-react';
+import { Settings, BarChart3, Plus, ClipboardList } from 'lucide-react';
 import { DateNavigation } from '../calendar/DateNavigation';
 
 export const HomeScreen: React.FC = () => {
@@ -16,14 +16,23 @@ export const HomeScreen: React.FC = () => {
         </h1>
         <div className="flex gap-4">
           <button
+            onClick={() => navigate('/reports/monthly-test')}
+            className="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg"
+            title="Monthly Report"
+          >
+            <ClipboardList size={24} />
+          </button>
+          <button
             onClick={() => navigate('/visualizations')}
             className="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg"
+            title="Visualizations"
           >
             <BarChart3 size={24} />
           </button>
           <button
             onClick={() => navigate('/settings')}
             className="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg"
+            title="Settings"
           >
             <Settings size={24} />
           </button>

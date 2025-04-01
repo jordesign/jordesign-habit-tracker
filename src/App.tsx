@@ -7,6 +7,7 @@ import { AddMetricPage } from './components/metrics/AddMetricPage';
 import { BooleanMetricTest } from './components/visualizations/BooleanMetricTest';
 import { ValueMetricTest } from './components/visualizations/ValueMetricTest';
 import { SelectMetricTest } from './components/visualizations/SelectMetricTest';
+import { MonthlyReportTest } from './components/reports/MonthlyReportTest';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/visualizations/boolean-test" element={<BooleanMetricTest />} />
         <Route path="/visualizations/value-test" element={<ValueMetricTest />} />
         <Route path="/visualizations/select-test" element={<SelectMetricTest />} />
+        <Route path="/reports/monthly-test" element={<MonthlyReportTest />} />
         <Route path="*" element={
           <div className="p-8 text-center">
             <h1 className="text-2xl font-bold text-gray-900">Page not found</h1>
