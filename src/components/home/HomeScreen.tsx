@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Settings, BarChart3, Plus, ClipboardList } from 'lucide-react';
+import { Settings, BarChart3, ClipboardList } from 'lucide-react';
 import { DateNavigation } from '../calendar/DateNavigation';
 
 export const HomeScreen: React.FC = () => {
@@ -38,20 +38,14 @@ export const HomeScreen: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className="bg-blue-100 p-4 rounded-lg">
-        <p className="text-2xl">Test Content</p>
-      </div>
-      <button
-        onClick={() => navigate('/metrics/new')}
-        className="fixed bottom-6 right-6 p-4 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        <Plus size={24} />
-      </button>
       <div className="mb-8">
         <DateNavigation
           selectedDate={selectedDate}
           onChange={setSelectedDate}
         />
+      </div>
+      <div className="bg-blue-100 p-4 rounded-lg">
+        <p className="text-2xl">Test Content</p>
       </div>
     </div>
   );
