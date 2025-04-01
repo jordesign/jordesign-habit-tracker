@@ -31,6 +31,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { toast } from 'react-hot-toast';
 import { ReminderService } from '../../services/reminderService';
+import { ExportService } from '../../services/exportService';
 
 interface MetricItem {
   id: string;
@@ -143,11 +144,21 @@ export const SettingsScreen: React.FC = () => {
   };
 
   const handleExport = async (format: 'csv' | 'json') => {
+    if (selectedMetricsForExport.length === 0) {
+      toast.error('Please select at least one metric to export');
+      return;
+    }
+
     setIsExporting(true);
     try {
-      // Implement export logic here
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      console.log(`Exporting ${format}...`);
+      await ExportService.exportData({
+        startDate: exportDateRange.start,
+        endDate: exportDateRange.end,
+        metricIds: selectedMetricsForExport,
+        format
+      });
+    } catch (error) {
+      console.error('Export error:', error);
     } finally {
       setIsExporting(false);
     }
@@ -394,23 +405,41 @@ export const SettingsScreen: React.FC = () => {
               <div className="flex gap-4">
                 <button
                   onClick={() => handleExport('csv')}
-                  disabled={isExporting}
+                  disabled={isExporting || selectedMetricsForExport.length === 0}
                   className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg
                            hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
                            focus:ring-blue-500 disabled:opacity-50"
                 >
-                  <Download size={20} className="mr-2" />
-                  {isExporting ? 'Exporting...' : 'Export CSV'}
+                  {isExporting ? (
+                    <>
+                      <span className="animate-spin mr-2">⏳</span>
+                      Exporting...
+                    </>
+                  ) : (
+                    <>
+                      <Download size={20} className="mr-2" />
+                      Export CSV
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={() => handleExport('json')}
-                  disabled={isExporting}
+                  disabled={isExporting || selectedMetricsForExport.length === 0}
                   className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg
                            hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
                            focus:ring-gray-500 disabled:opacity-50"
                 >
-                  <Download size={20} className="mr-2" />
-                  {isExporting ? 'Exporting...' : 'Export JSON'}
+                  {isExporting ? (
+                    <>
+                      <span className="animate-spin mr-2">⏳</span>
+                      Exporting...
+                    </>
+                  ) : (
+                    <>
+                      <Download size={20} className="mr-2" />
+                      Export JSON
+                    </>
+                  )}
                 </button>
               </div>
             </div>
