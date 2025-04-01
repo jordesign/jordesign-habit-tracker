@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[template.environment]
+  SENDGRID_API_KEY = "Your SendGrid API key"
+  SENDGRID_FROM_EMAIL = "Your verified sender email"
+  APP_URL = "Your app URL" 

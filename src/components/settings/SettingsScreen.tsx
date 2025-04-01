@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
-  Grip,
+  GripVertical,
   Trash2,
   Edit,
   Plus,
@@ -12,7 +12,25 @@ import {
   Moon,
   Sun
 } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { toast } from 'react-hot-toast';
+import { ReminderService } from '../../services/reminderService';
 
 interface MetricItem {
   id: string;
@@ -20,6 +38,60 @@ interface MetricItem {
   type: 'boolean' | 'value' | 'select';
   order: number;
 }
+
+// Sortable Metric Item Component
+const SortableMetricItem = ({ metric }: { metric: MetricItem }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: metric.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 1 : 0,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center justify-between p-4 bg-gray-50 rounded-lg
+                ${isDragging ? 'shadow-lg' : ''}`}
+    >
+      <div className="flex items-center gap-4">
+        <button
+          {...attributes}
+          {...listeners}
+          className="touch-none"
+          type="button"
+        >
+          <GripVertical size={20} className="text-gray-400" />
+        </button>
+        <span className="font-medium">{metric.name}</span>
+        <span className="text-sm text-gray-500">{metric.type}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => {/* Implement edit */}}
+          className="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-lg"
+        >
+          <Edit size={20} />
+        </button>
+        <button
+          onClick={() => {/* Implement delete */}}
+          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg"
+        >
+          <Trash2 size={20} />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export const SettingsScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -38,6 +110,7 @@ export const SettingsScreen: React.FC = () => {
   });
   const [selectedMetricsForExport, setSelectedMetricsForExport] = useState<string[]>([]);
   const [isExporting, setIsExporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Example metrics data
   const [metrics, setMetrics] = useState<MetricItem[]>([
@@ -46,20 +119,27 @@ export const SettingsScreen: React.FC = () => {
     { id: '3', name: 'Mood', type: 'select', order: 2 }
   ]);
 
-  const handleDragEnd = (result: any) => {
-    if (!result.destination) return;
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const items = Array.from(metrics);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    // Update order numbers
-    const updatedItems = items.map((item, index) => ({
-      ...item,
-      order: index
-    }));
-
-    setMetrics(updatedItems);
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (over && active.id !== over.id) {
+      setMetrics((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        
+        return arrayMove(items, oldIndex, newIndex).map((item, index) => ({
+          ...item,
+          order: index
+        }));
+      });
+    }
   };
 
   const handleExport = async (format: 'csv' | 'json') => {
@@ -70,6 +150,35 @@ export const SettingsScreen: React.FC = () => {
       console.log(`Exporting ${format}...`);
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleSaveReminders = async () => {
+    if (!email || !reminderTime || selectedMetrics.length === 0) {
+      // Show error message
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const success = await ReminderService.configureReminders(
+        email,
+        reminderTime,
+        selectedMetrics
+      );
+
+      if (success) {
+        // Show success message
+        toast.success('Reminder settings saved successfully');
+      } else {
+        // Show error message
+        toast.error('Failed to save reminder settings');
+      }
+    } catch (error) {
+      console.error('Error saving reminders:', error);
+      toast.error('Failed to save reminder settings');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -122,60 +231,22 @@ export const SettingsScreen: React.FC = () => {
               </button>
             </div>
 
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="metrics">
-                {(provided) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="space-y-2"
-                  >
-                    {metrics.map((metric, index) => (
-                      <Draggable
-                        key={metric.id}
-                        draggableId={metric.id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div {...provided.dragHandleProps}>
-                                <Grip size={20} className="text-gray-400" />
-                              </div>
-                              <span className="font-medium">{metric.name}</span>
-                              <span className="text-sm text-gray-500">
-                                {metric.type}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => {/* Implement edit */}}
-                                className="p-2 text-gray-600 hover:text-blue-600 
-                                         hover:bg-gray-100 rounded-lg"
-                              >
-                                <Edit size={20} />
-                              </button>
-                              <button
-                                onClick={() => {/* Implement delete */}}
-                                className="p-2 text-gray-600 hover:text-red-600 
-                                         hover:bg-red-50 rounded-lg"
-                              >
-                                <Trash2 size={20} />
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={metrics}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="space-y-2">
+                  {metrics.map((metric) => (
+                    <SortableMetricItem key={metric.id} metric={metric} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
           </div>
         )}
 
